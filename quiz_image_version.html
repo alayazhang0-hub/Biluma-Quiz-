@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pigmentation Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#fcebe3; }
+    .cover, .quiz, .result { display: none; text-align: center; padding: 20px; }
+    .cover img { width: 100%; height: auto; }
+    .quiz, .result { max-width: 600px; margin: auto; }
+    .question { font-size: 1.2em; margin-bottom: 20px; }
+    button { background-color: #d37d52; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; margin-top: 10px; }
+    button:hover { background-color: #b8653f; }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    em { display: block; margin-top: 15px; font-style: italic; color: #444; }
+  </style>
+</head>
+<body>
+
+<div class="cover" id="cover">
+  <img src="cover.png" alt="Cover">
+  <button onclick="startQuiz()">Start Analysis</button>
+</div>
+
+<div class="quiz" id="quiz">
+  <div id="question-container"></div>
+  <div class="options" id="options"></div>
+</div>
+
+<div class="result" id="result">
+  <h2 id="result-title"></h2>
+  <em id="result-text"></em>
+  <a href="https://www.biluma.co.in" target="_blank"><button>Learn More</button></a>
+</div>
+
+<script>
+const questions = [
+  {
+    question: "When you're out in the sun, you notice your skin's dark spots...",
+    options: ["Get even darker, even with sunscreen on!", "Stay the same, but new ones seem to appear.", "Fade away quickly after a few days."]
+  },
+  {
+    question: "Which word best describes your skin's personality?",
+    options: ["Sensitive, it gets red and irritated easily.", "Resilient, it can handle almost anything.", "Confused, sometimes it's oily, sometimes dry."]
+  },
+  {
+    question: "When you have a new acne mark, it...",
+    options: ["Leaves a dark spot that takes forever to fade.", "Fades on its own in just a few days.", "Doesn't really leave a mark."]
+  },
+  {
+    question: "What's your biggest skin goal?",
+    options: ["To have an even, clear skin.", "No pigmentation.", "To get rid of wrinkles and fine lines."]
+  }
+];
+
+const results = {
+  positive: {
+    title: "The Pigmentation Positive",
+    text: "Based on your quiz results, it looks like your skin is prone to stubborn dark spots that go deeper than the surface. To achieve a truly clear, even tone, you need more than a basic product. Biluma is a dermatologically approved solution designed to correct pigmentation at its source, giving your skin the specialized, non-irritating care it needs."
+  },
+  protector: {
+    title: "The Proactive Protector",
+    text: "Your skin is resilient and you're already one step ahead, focusing on prevention. To achieve a truly pigmentation-free look, you need a powerful yet gentle approach. Biluma is your dermatologist-approved ally to tackle any new or existing spots and help you maintain that bright, even complexion."
+  },
+  strategist: {
+    title: "The Skin Strategist",
+    text: "You know exactly what you want from your skincare, and that focused goal requires a dedicated approach. Even if your skin isn't highly prone to dark spots, having the right tool is key. Biluma is a scientifically formulated solution trusted by dermatologists to address dark spots effectively, helping you achieve the skin goals you're working so hard for."
+  }
+};
+
+let currentQuestion = 0;
+let answers = [];
+
+function startQuiz() {
+  document.getElementById("cover").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  showQuestion();
+}
+
+function showQuestion() {
+  if (currentQuestion < questions.length) {
+    document.getElementById("question-container").innerText = questions[currentQuestion].question;
+    const optionsContainer = document.getElementById("options");
+    optionsContainer.innerHTML = "";
+    questions[currentQuestion].options.forEach((option, index) => {
+      const btn = document.createElement("button");
+      btn.innerText = option;
+      btn.onclick = () => {
+        answers.push(index);
+        currentQuestion++;
+        showQuestion();
+      };
+      optionsContainer.appendChild(btn);
+    });
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("result").style.display = "block";
+  let counts = {0:0,1:0,2:0};
+  answers.forEach(a => counts[a]++);
+  let outcome = "positive";
+  if (counts[1] >= 2) outcome = "protector";
+  if (counts[2] >= 2) outcome = "strategist";
+  document.getElementById("result-title").innerText = results[outcome].title;
+  document.getElementById("result-text").innerText = results[outcome].text;
+}
+
+window.onload = () => {
+  document.getElementById("cover").style.display = "block";
+};
+</script>
+
+</body>
+</html>
